@@ -11,21 +11,23 @@ from nolitsa import data, lyapunov
 import numpy as np
 import matplotlib.pyplot as plt
 
-x = data.henon(length=5000)[:, 0]
 
-# Time delay.
-tau = 1
+if __name__ == "__main__":
+    x = data.henon(length=5000)[:, 0]
 
-# Embedding dimension.
-dim = [2]
+    # Time delay.
+    tau = 1
 
-d = lyapunov.mle_embed(x, dim=dim, tau=tau, maxt=25)[0]
-t = np.arange(25)
+    # Embedding dimension.
+    dim = [2]
 
-plt.title('Maximum Lyapunov exponent for the Henon system')
-plt.xlabel(r'Time $t$')
-plt.ylabel(r'Average divergence $\langle d_i(t) \rangle$')
-plt.plot(t, d)
-plt.plot(t, t * 0.419 + d[0], '--')
+    d = lyapunov.mle_embed(x, dim=dim, tau=tau, maxt=25)[0]
+    t = np.arange(25)
 
-plt.show()
+    plt.title('Maximum Lyapunov exponent for the Henon system')
+    plt.xlabel(r'Time $t$')
+    plt.ylabel(r'Average divergence $\langle d_i(t) \rangle$')
+    plt.plot(t, d)
+    plt.plot(t, t * 0.419 + d[0], '--')
+
+    plt.show()
