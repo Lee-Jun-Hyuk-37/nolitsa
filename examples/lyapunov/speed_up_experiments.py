@@ -1,7 +1,11 @@
+import numpy as np
+
 from nolitsa import data, lyapunov
 import matplotlib.pyplot as plt
 import time
 
+
+metric = "chebyshev"
 
 if __name__ == "__main__":
     sample = 0.01
@@ -26,14 +30,16 @@ if __name__ == "__main__":
     for l in data_len:
         print("l: {}".format(l))
         start = time.time()
-        _ = lyapunov.mle_embed(x[:l], dim=dim, tau=tau, maxt=300, window=window)[0]
+        first = lyapunov.prev_mle_embed(x[:l], dim=dim, tau=tau, maxt=300, window=window, metric=metric)[0]
         end = time.time()
         res.append(end - start)
 
         start = time.time()
-        _ = lyapunov.fast_euclidean_mle_embed(x[:l], dim=dim, tau=tau, maxt=300, window=window)[0]
+        second = lyapunov.mle_embed(x[:l], dim=dim, tau=tau, maxt=300, window=window, metric=metric)[0]
         end = time.time()
         res_fast.append(end - start)
+
+        print("same value:{}".format(np.allclose(first, second)))
 
     plt.figure()
     plt.title("Experiment by data length")
@@ -52,14 +58,16 @@ if __name__ == "__main__":
     for t in max_t:
         print("max_t: {}".format(t))
         start = time.time()
-        _ = lyapunov.mle_embed(x[:5000], dim=dim, tau=tau, maxt=t, window=window)[0]
+        first = lyapunov.prev_mle_embed(x[:5000], dim=dim, tau=tau, maxt=t, window=window, metric=metric)[0]
         end = time.time()
         res.append(end - start)
 
         start = time.time()
-        _ = lyapunov.fast_euclidean_mle_embed(x[:5000], dim=dim, tau=tau, maxt=t, window=window)[0]
+        second = lyapunov.mle_embed(x[:5000], dim=dim, tau=tau, maxt=t, window=window, metric=metric)[0]
         end = time.time()
         res_fast.append(end - start)
+
+        print("same value:{}".format(np.allclose(first, second)))
 
     plt.figure()
     plt.title("Experiment by maxt")
@@ -79,14 +87,16 @@ if __name__ == "__main__":
     for dim in embed_dim:
         print("dim: {}".format(dim))
         start = time.time()
-        _ = lyapunov.mle_embed(x[:5000], dim=dim, tau=tau, maxt=300, window=window)[0]
+        first = lyapunov.prev_mle_embed(x[:5000], dim=dim, tau=tau, maxt=300, window=window, metric=metric)[0]
         end = time.time()
         res.append(end - start)
 
         start = time.time()
-        _ = lyapunov.fast_euclidean_mle_embed(x[:5000], dim=dim, tau=tau, maxt=300, window=window)[0]
+        second = lyapunov.mle_embed(x[:5000], dim=dim, tau=tau, maxt=300, window=window, metric=metric)[0]
         end = time.time()
         res_fast.append(end - start)
+
+        print("same value:{}".format(np.allclose(first, second)))
 
     plt.figure()
     plt.title("Experiment by embedding dimension")

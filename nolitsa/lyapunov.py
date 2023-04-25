@@ -77,8 +77,8 @@ def mle(y, maxt=500, window=10, metric='euclidean', maxnum=None):
     return d
 
 
-def fast_euclidean_mle(y, maxt=500, window=10, maxnum=None):
-    index, dist = utils.neighbors(y, metric='euclidean', window=window,
+def prev_mle(y, maxt=500, window=10, metric='euclidean', maxnum=None):
+    index, dist = utils.neighbors(y, metric=metric, window=window,
                                   maxnum=maxnum)
     m = len(y)
     maxt = min(m - window - 1, maxt)
@@ -95,7 +95,7 @@ def fast_euclidean_mle(y, maxt=500, window=10, maxnum=None):
         valid = t2 < m
         t1, t2 = t1[valid], t2[valid]
 
-        d[t] = np.mean(np.log(utils.fast_euclidean_dist(y[t1], y[t2])))
+        d[t] = np.mean(np.log(utils.prev_dist(y[t1], y[t2], metric=metric)))
 
     return d
 
@@ -161,8 +161,8 @@ def mle_embed(x, dim=[1], tau=1, window=10, maxt=500,
                               }, processes=processes)
 
 
-def fast_euclidean_mle_embed(x, dim=[1], tau=1, window=10, maxt=500,
-                             maxnum=None, parallel=True):
+def prev_mle_embed(x, dim=[1], tau=1, window=10, maxt=500,
+              metric='euclidean', maxnum=None, parallel=True):
     if parallel:
         processes = None
     else:
@@ -170,8 +170,9 @@ def fast_euclidean_mle_embed(x, dim=[1], tau=1, window=10, maxt=500,
 
     yy = [utils.reconstruct(x, dim=d, tau=tau) for d in dim]
 
-    return utils.parallel_map(fast_euclidean_mle, yy, kwargs={
+    return utils.parallel_map(prev_mle, yy, kwargs={
                               'maxt': maxt,
                               'window': window,
+                              'metric': metric,
                               'maxnum': maxnum
                               }, processes=processes)
